@@ -10,7 +10,7 @@ import plotly.graph_objects as go
 
 
 #Carregando Dados e Ajuste
-df = pd.read_excel('/workspaces/Dashboard_PVC/dados.xlsx', sheet_name='1ª planilha')
+df = pd.read_excel('dados.xlsx', sheet_name='1ª planilha')
 #df["Horário desatracação"] = pd.to_datetime(df["Horário desatracação"])
 df["Mes"]= df["Horário desatracação"].apply(lambda x: str(x.year) + "-" + str(x.month))
 #df = df.sort_values("Horário desatracação")
@@ -22,14 +22,14 @@ df["Berço"] = df["Berço"].astype(str)
 
 
 #Layout de Visualização da Dashboard
-st.set_page_config(page_title="Dashboard PVC", page_icon="/workspaces/Dashboard_PVC/CDP.png", layout="wide")
+st.set_page_config(page_title="Dashboard PVC", page_icon="CDP.png", layout="wide")
 
 intro1, intro2,intro3  = st.columns(3)
 with st.container():
   with intro1:
      st.title("Monitoramento PVC")
   with intro3:
-    st.image("/workspaces/Dashboard_PVC/cdp2.png",width=300)
+    st.image("cdp2.png",width=300)
     st.text('Tec. Admin. OP: Amaro Neto')
 
 

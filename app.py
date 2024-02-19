@@ -45,7 +45,7 @@ col1, col2, col3 = st.columns(3)
 tab1, tab2 = st.tabs(["📈 Gráficos", "🗃 Dados"])
 
 #/content/drive/MyDrive/Colab Notebooks/banco_dados/dados.xlsx
-df = Load_dados('Base_Dados/dados2.csv')
+df = Load_dados('dados.xlsx')
 
 with st.container():
 

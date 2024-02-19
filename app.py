@@ -18,6 +18,7 @@ def Load_dados(endereco):
   df["Berço"] = df["Berço"].astype(str)
   df = df.rename(columns={'Soma do tempo de operação paralisada': 'Paralização'})
   df["Qtd. de carga movimentada (un.)"] = df["Qtd. de carga movimentada (un.)"].astype(str)
+  df["Horário fundeio"]= df["Horário fundeio"].apply(lambda x: x == '(em branco)',0)
   return df
 
 

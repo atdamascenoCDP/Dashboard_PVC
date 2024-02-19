@@ -92,8 +92,8 @@ with st.container():
       col9.plotly_chart(fig_date)
 
       #-----------------------------------------------------------------------------------------------------------------------
-      df_so_conteiner = df_filtered[df_filtered['Carga principal']=='CONTÊINERES']
-      df_tempo_navio_carga["Qtd. de contêineres movimentados (un.)"] = df_tempo_navio_carga["Qtd. de contêineres movimentados (un.)"].astype(int)
+      df_so_conteiner = df_filtered[df_filtered['Carga principal']=='CONTÊINERES']]
+      #df_tempo_navio_carga["Qtd. de contêineres movimentados (un.)"] = df_tempo_navio_carga["Qtd. de contêineres movimentados (un.)"].astype(int)
       fig_date = px.pie(df_so_conteiner, values='Qtd. de contêineres movimentados (un.)', names='Operador',hover_data=['Berço'],title="Quantidade de Conteiner Movimentada (Un)")
       col10.plotly_chart(fig_date)
 

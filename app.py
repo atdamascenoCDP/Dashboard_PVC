@@ -17,6 +17,7 @@ def Load_dados(endereco):
   df.loc[df["Carga principal"] == "COQUE DE PETRÓLEO, BETUME DE PETRÓLEO E OUTROS RESÍDUOS DOS ÓLEOS DE PETRÓLEO","Carga principal"] = "COQUE"
   df["Berço"] = df["Berço"].astype(str)
   df = df.rename(columns={'Soma do tempo de operação paralisada': 'Paralização'})
+  df["Qtd. de contêineres movimentados (un.)"] = df["Qtd. de contêineres movimentados (un.)"].astype(int)
   return df
 
 
@@ -92,8 +93,7 @@ with st.container():
       col9.plotly_chart(fig_date)
 
       #-----------------------------------------------------------------------------------------------------------------------
-      df_so_conteiner = df_filtered[df_filtered['Carga principal']=='CONTÊINERES']]
-      #df_tempo_navio_carga["Qtd. de contêineres movimentados (un.)"] = df_tempo_navio_carga["Qtd. de contêineres movimentados (un.)"].astype(int)
+      df_so_conteiner = df_filtered[df_filtered['Carga principal']=='CONTÊINERES']
       fig_date = px.pie(df_so_conteiner, values='Qtd. de contêineres movimentados (un.)', names='Operador',hover_data=['Berço'],title="Quantidade de Conteiner Movimentada (Un)")
       col10.plotly_chart(fig_date)
 

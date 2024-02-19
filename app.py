@@ -101,10 +101,8 @@ with st.container():
       df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo de Atracação"] / df_tempo_navio_carga["Agendamento"]
       
       df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo Médio"].round('min')
-      df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo Médio"].astype(str)
       df_tempo_navio_carga = df_tempo_navio_carga.sort_values("Tempo Médio")
-
-    
+      df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo Médio"].astype(str)
       df_tempo_navio_carga["Paralização"] = df_tempo_navio_carga["Paralização"].round(2)
       fig_date = px.bar(df_tempo_navio_carga, x="Tempo Médio", y="Carga principal",color='Paralização',orientation='h',text_auto=True,width=700,height=750, title="ESTADIA DAS EMBARCAÇÃO POR CARGA (Média) E PARALIZAÇÃO(Hrs)")
       col11.plotly_chart(fig_date)

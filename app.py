@@ -12,8 +12,8 @@ import plotly.graph_objects as go
 #Carregando Dados e Ajuste
 @st.cache_data
 def Load_dados(endereco):
-  #df = pd.read_excel(endereco, sheet_name='1ª planilha')
-  df = pd.read_csv(DATA_URL)
+  df = pd.read_excel(endereco, sheet_name='1ª planilha')
+  #df = pd.read_csv(DATA_URL)
   df["Mes"]= df["Horário desatracação"].apply(lambda x: str(x.year) + "-" + str(x.month))
   df.loc[df["Carga principal"] == "COQUE DE PETRÓLEO, BETUME DE PETRÓLEO E OUTROS RESÍDUOS DOS ÓLEOS DE PETRÓLEO","Carga principal"] = "COQUE"
   df["Berço"] = df["Berço"].astype(str)

@@ -10,18 +10,18 @@ import plotly.graph_objects as go
 
 
 #Carregando Dados e Ajuste
-df = pd.read_excel('dados.xlsx', sheet_name='1ª planilha')
-#df["Horário desatracação"] = pd.to_datetime(df["Horário desatracação"])
-df["Mes"]= df["Horário desatracação"].apply(lambda x: str(x.year) + "-" + str(x.month))
-#df = df.sort_values("Horário desatracação")
-df.loc[df["Carga principal"] == "COQUE DE PETRÓLEO, BETUME DE PETRÓLEO E OUTROS RESÍDUOS DOS ÓLEOS DE PETRÓLEO","Carga principal"] = "COQUE"
-
-
-df["Berço"] = df["Berço"].astype(str)
-
+@st.cache_data
+def Load_dados(endereco):
+  df = pd.read_excel(endereco, sheet_name='1ª planilha')
+  df["Mes"]= df["Horário desatracação"].apply(lambda x: str(x.year) + "-" + str(x.month))
+  df.loc[df["Carga principal"] == "COQUE DE PETRÓLEO, BETUME DE PETRÓLEO E OUTROS RESÍDUOS DOS ÓLEOS DE PETRÓLEO","Carga principal"] = "COQUE"
+  df["Berço"] = df["Berço"].astype(str)
+  df = df.rename(columns={'Soma do tempo de operação paralisada': 'Paralização'})
+  return df
 
 
 #Layout de Visualização da Dashboard
+#/content/drive/MyDrive/Colab Notebooks/ICONS/CDP.png
 st.set_page_config(page_title="Dashboard PVC", page_icon="CDP.png", layout="wide")
 
 intro1, intro2,intro3  = st.columns(3)
@@ -29,6 +29,7 @@ with st.container():
   with intro1:
      st.title("Monitoramento PVC")
   with intro3:
+    #/content/drive/MyDrive/Colab Notebooks/ICONS/cdp2.png
     st.image("cdp2.png",width=300)
     st.text('Tec. Admin. OP: Amaro Neto')
 
@@ -40,7 +41,8 @@ col1, col2, col3 = st.columns(3)
 
 tab1, tab2 = st.tabs(["📈 Gráficos", "🗃 Dados"])
 
-
+#/content/drive/MyDrive/Colab Notebooks/banco_dados/dados.xlsx
+df = Load_dados('dados.xlsx')
 
 with st.container():
 
@@ -86,7 +88,7 @@ with st.container():
       col8.plotly_chart(fig_date)
 
       df_sem_conteiner = df_filtered[df_filtered['Carga principal']!='CONTÊINERES']
-      fig_date = px.treemap(df_sem_conteiner, path=[px.Constant("Porto de Vila do Conde"), 'Carga principal','Berço'], hover_data=['Soma do tempo de operação paralisada'],values='Peso da carga movimentada (t)',title="Quantidade de Carga Movimentada (t)")
+      fig_date = px.treemap(df_sem_conteiner, path=[px.Constant("Porto de Vila do Conde"), 'Carga principal','Berço'], hover_data=['Paralização'],values='Peso da carga movimentada (t)',title="Quantidade de Carga Movimentada (t)")
       col9.plotly_chart(fig_date)
 
       #-----------------------------------------------------------------------------------------------------------------------
@@ -95,16 +97,18 @@ with st.container():
       col10.plotly_chart(fig_date)
 
       df_filtered["Tempo de Atracação"] = df_filtered["Horário desatracação"] - df_filtered["Horário atracação"]
-      df_tempo_navio_carga = df_filtered.groupby('Carga principal').agg({'Tempo de Atracação':'sum','Agendamento':'count'}).reset_index()
+      df_tempo_navio_carga = df_filtered.groupby('Carga principal').agg({'Tempo de Atracação':'sum','Agendamento':'count','Paralização':'sum'}).reset_index()
       df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo de Atracação"] / df_tempo_navio_carga["Agendamento"]
+      
+      df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo Médio"].round('s')
       df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo Médio"].astype(str)
       df_tempo_navio_carga = df_tempo_navio_carga.sort_values("Tempo Médio")
-      fig_date = px.bar(df_tempo_navio_carga, x="Tempo Médio", y="Carga principal",orientation='h',text_auto=True,width=700,height=750, title="ESTADIA DE NAVIOS POR CARGA(Média)")
+
+    
+      df_tempo_navio_carga["Paralização"] = df_tempo_navio_carga["Paralização"].round(2)
+      fig_date = px.bar(df_tempo_navio_carga, x="Tempo Médio", y="Carga principal",color='Paralização',orientation='h',text_auto=True,width=700,height=750, title="ESTADIA DAS EMBARCAÇÃO POR CARGA (Média) E PARALIZAÇÃO(Hrs)")
       col11.plotly_chart(fig_date)
       #-----------------------------------------------------------------------------------------------------------------------
 
   with tab2:
-    st.dataframe(df_filtered,2000,1000)
-
-
-
+    st.dataframe(df_filtered,2000,600,hide_index=True)

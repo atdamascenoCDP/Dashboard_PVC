@@ -100,7 +100,7 @@ with st.container():
       df_tempo_navio_carga = df_filtered.groupby('Carga principal').agg({'Tempo de Atracação':'sum','Agendamento':'count','Paralização':'sum'}).reset_index()
       df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo de Atracação"] / df_tempo_navio_carga["Agendamento"]
       
-      df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo Médio"].round('s')
+      df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo Médio"].round('min')
       df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo Médio"].astype(str)
       df_tempo_navio_carga = df_tempo_navio_carga.sort_values("Tempo Médio")
 

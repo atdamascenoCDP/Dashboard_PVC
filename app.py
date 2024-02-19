@@ -17,7 +17,7 @@ def Load_dados(endereco):
   df.loc[df["Carga principal"] == "COQUE DE PETRÓLEO, BETUME DE PETRÓLEO E OUTROS RESÍDUOS DOS ÓLEOS DE PETRÓLEO","Carga principal"] = "COQUE"
   df["Berço"] = df["Berço"].astype(str)
   df = df.rename(columns={'Soma do tempo de operação paralisada': 'Paralização'})
-  df["Qtd. de contêineres movimentados (un.)"] = df["Qtd. de contêineres movimentados (un.)"].astype(int)
+  
   return df
 
 

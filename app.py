@@ -12,7 +12,8 @@ import plotly.graph_objects as go
 #Carregando Dados e Ajuste
 @st.cache_data
 def Load_dados(endereco):
-  df = pd.read_excel(endereco, sheet_name='1ª planilha')
+  #df = pd.read_excel(endereco, sheet_name='1ª planilha')
+  df = pd.read_csv(DATA_URL)
   df["Mes"]= df["Horário desatracação"].apply(lambda x: str(x.year) + "-" + str(x.month))
   df.loc[df["Carga principal"] == "COQUE DE PETRÓLEO, BETUME DE PETRÓLEO E OUTROS RESÍDUOS DOS ÓLEOS DE PETRÓLEO","Carga principal"] = "COQUE"
   df["Berço"] = df["Berço"].astype(str)
@@ -44,7 +45,7 @@ col1, col2, col3 = st.columns(3)
 tab1, tab2 = st.tabs(["📈 Gráficos", "🗃 Dados"])
 
 #/content/drive/MyDrive/Colab Notebooks/banco_dados/dados.xlsx
-df = Load_dados('dados.xlsx')
+df = Load_dados('Base_Dados/dados2.csv')
 
 with st.container():
 

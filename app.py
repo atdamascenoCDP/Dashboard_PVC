@@ -24,7 +24,7 @@ def Load_dados(endereco):
 
 #Layout de Visualização da Dashboard
 #/content/drive/MyDrive/Colab Notebooks/ICONS/CDP.png
-st.set_page_config(page_title="Dashboard PVC", page_icon="CDP.png", layout="wide")
+st.set_page_config(page_title="Dashboard PVC", page_icon="Img/CDP.png", layout="wide")
 
 intro1, intro2,intro3  = st.columns(3)
 with st.container():
@@ -32,7 +32,7 @@ with st.container():
      st.title("Monitoramento PVC")
   with intro3:
     #/content/drive/MyDrive/Colab Notebooks/ICONS/cdp2.png
-    st.image("cdp2.png",width=300)
+    st.image("Img/cdp2.png",width=300)
     st.text('Tec. Admin. OP: Amaro Neto')
 
 

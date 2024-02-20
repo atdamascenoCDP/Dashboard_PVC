@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 from streamlit.elements import plotly_chart
+from streamlit_gsheets import GSheetsConnection
 import plotly.graph_objects as go
 
 
@@ -12,8 +13,10 @@ import plotly.graph_objects as go
 #Carregando Dados e Ajuste
 @st.cache_data
 def Load_dados(endereco):
-  df = pd.read_excel(endereco, sheet_name='1ª planilha')
-  #df = pd.read_csv(DATA_URL)
+  #df = pd.read_excel(endereco, sheet_name='1ª planilha')
+  conn = st.connection("gsheets", type=GSheetsConnection)
+  df = conn.read(worksheet='1ª planilha')
+  
   df["Mes"]= df["Horário desatracação"].apply(lambda x: str(x.year) + "-" + str(x.month))
   df.loc[df["Carga principal"] == "COQUE DE PETRÓLEO, BETUME DE PETRÓLEO E OUTROS RESÍDUOS DOS ÓLEOS DE PETRÓLEO","Carga principal"] = "COQUE"
   df["Berço"] = df["Berço"].astype(str)

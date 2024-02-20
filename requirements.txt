@@ -1,3 +1,2 @@
 plotly
 openpyxl
-streamlit_gsheets

@@ -1,2 +1,7 @@
-plotly
 openpyxl
+pandas
+plotly
+streamlit
+yfinance
+pandas-datareader
+prophet

@@ -12,7 +12,7 @@ import plotly.graph_objects as go
 
 #Carregando Dados e Ajuste
 @st.cache_data
-def Load_dados(endereco):
+def Load_dados():
   #df = pd.read_excel(endereco, sheet_name='1ª planilha')
   conn = st.connection("gsheets", type=GSheetsConnection)
   df = conn.read(worksheet='1ª planilha')
@@ -48,7 +48,7 @@ col1, col2, col3 = st.columns(3)
 tab1, tab2 = st.tabs(["📈 Gráficos", "🗃 Dados"])
 
 #/content/drive/MyDrive/Colab Notebooks/banco_dados/dados.xlsx
-df = Load_dados('Base_Dados/dados.xlsx')
+df = Load_dados()
 
 with st.container():
 

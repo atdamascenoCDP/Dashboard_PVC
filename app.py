@@ -74,6 +74,8 @@ with st.container():
       col4, col5, col6, col7  = st.columns(4)
       col8, col9  = st.columns(2)
       col10, col11  = st.columns(2)
+      col12, col13  = st.columns(2)
+
       with st.container():
         with col4:
 
@@ -95,8 +97,10 @@ with st.container():
       col9.plotly_chart(fig_date)
 
       #-----------------------------------------------------------------------------------------------------------------------
-      df_so_conteiner = df_filtered[df_filtered['Carga principal']=='CONTÊINERES']
-      fig_date = px.pie(df_so_conteiner, values='Qtd. de contêineres movimentados (un.)', names='Operador',hover_data=['Berço'],title="Quantidade de Conteiner Movimentada (Un)")
+      df_temp_berco_carga = df_filtered.groupby('Berço').agg({'Paralização':'sum'}).reset_index()
+      df_temp_berco_carga["Paralização"] = df_temp_berco_carga["Paralização"].round(2)
+      fig_date = px.sunburst(df_temp_berco_carga, path=['Berço'], values='Paralização',width=700,title="PARALIZAÇÃO(Hrs) Por Berço")
+      #fig_date = px.bar(df_temp_berco_carga, x="Berço", y="Paralização",color="Berço",text_auto=True,width=700,height=750, title="PARALIZAÇÃO(Hrs) Por Berço")
       col10.plotly_chart(fig_date)
 
       df_filtered["Tempo de Atracação"] = df_filtered["Horário desatracação"] - df_filtered["Horário atracação"]
@@ -106,9 +110,13 @@ with st.container():
       df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo Médio"].round('min')
       df_tempo_navio_carga = df_tempo_navio_carga.sort_values("Tempo Médio")
       df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo Médio"].astype(str)
-      df_tempo_navio_carga["Paralização"] = df_tempo_navio_carga["Paralização"].round(2)
-      fig_date = px.bar(df_tempo_navio_carga, x="Tempo Médio", y="Carga principal",color='Paralização',orientation='h',text_auto=True,width=700,height=750, title="ESTADIA DAS EMBARCAÇÃO POR CARGA (Média) E PARALIZAÇÃO(Hrs)")
+      fig_date = px.bar(df_tempo_navio_carga, x="Tempo Médio", y="Carga principal",orientation='h',text_auto=True,width=700,height=750, title="ESTADIA DAS EMBARCAÇÃO POR CARGA (Média)")
       col11.plotly_chart(fig_date)
+      #-----------------------------------------------------------------------------------------------------------------------
+      
+      df_so_conteiner = df_filtered[df_filtered['Carga principal']=='CONTÊINERES']
+      fig_date = px.pie(df_so_conteiner, values='Qtd. de contêineres movimentados (un.)', names='Operador',hover_data=['Berço'],title="Quantidade de Conteiner Movimentada (Un)")
+      col12.plotly_chart(fig_date)
       #-----------------------------------------------------------------------------------------------------------------------
 
   with tab2:

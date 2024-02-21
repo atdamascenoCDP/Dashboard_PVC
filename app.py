@@ -15,7 +15,7 @@ import plotly.graph_objects as go
 def Load_dados():
   #df = pd.read_excel(endereco, sheet_name='1ª planilha')
   conn = st.connection("gsheets", type=GSheetsConnection)
-  df = conn.read(worksheet='1ª planilha')
+  df = conn.read()
   
   df["Mes"]= df["Horário desatracação"].apply(lambda x: str(x.year) + "-" + str(x.month))
   df.loc[df["Carga principal"] == "COQUE DE PETRÓLEO, BETUME DE PETRÓLEO E OUTROS RESÍDUOS DOS ÓLEOS DE PETRÓLEO","Carga principal"] = "COQUE"

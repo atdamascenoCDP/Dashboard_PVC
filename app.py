@@ -85,7 +85,8 @@ with st.container():
         with col6:
           st.metric("INDICE DE MOVIMENTAÇÃO DE CONTEINERES","----")
         with col7:
-          st.metric("----","----")
+          emb = df_filtered['Embarcação'].count()
+          st.metric("Total de Embarcações",emb)
 
 
       #-----------------------------------------------------------------------------------------------------------------------

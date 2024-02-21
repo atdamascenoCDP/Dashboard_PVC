@@ -100,7 +100,7 @@ with st.container():
       #-----------------------------------------------------------------------------------------------------------------------
       df_temp_berco_carga = df_filtered.groupby('Berço').agg({'Paralização':'sum'}).reset_index()
       df_temp_berco_carga["Paralização"] = df_temp_berco_carga["Paralização"].round(2)
-      fig_date = px.sunburst(df_temp_berco_carga, path=['Berço'], values='Paralização',width=700,title="PARALIZAÇÃO(Hora) Por Berço")
+      fig_date = px.sunburst(df_temp_berco_carga, path=['Berço'], values='Paralização',width=700,title="PARALISAÇÃO(Hora) Por Berço")
       #fig_date = px.bar(df_temp_berco_carga, x="Berço", y="Paralização",color="Berço",text_auto=True,width=700,height=750, title="PARALIZAÇÃO(Hrs) Por Berço")
       col10.plotly_chart(fig_date)
 

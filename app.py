@@ -17,7 +17,7 @@ def Load_dados(endereco):
   df["Mes"]= df["Horário desatracação"].apply(lambda x: str(x.year) + "-" + str(x.month))
   df.loc[df["Carga principal"] == "COQUE DE PETRÓLEO, BETUME DE PETRÓLEO E OUTROS RESÍDUOS DOS ÓLEOS DE PETRÓLEO","Carga principal"] = "COQUE"
   df["Berço"] = df["Berço"].astype(str)
-  df = df.rename(columns={'Soma do tempo de operação paralisada': 'Paralização'})
+  df = df.rename(columns={'Soma do tempo de operação paralisada': 'Paralisação'})
   df["Qtd. de carga movimentada (un.)"] = df["Qtd. de carga movimentada (un.)"].astype(str)
   #df["Horário fundeio"]= df["Horário fundeio"].astype(str)
   return df
@@ -94,18 +94,18 @@ with st.container():
       col8.plotly_chart(fig_date)
 
       df_sem_conteiner = df_filtered[df_filtered['Carga principal']!='CONTÊINERES']
-      fig_date = px.treemap(df_sem_conteiner, path=[px.Constant("Porto de Vila do Conde"), 'Carga principal','Berço'], hover_data=['Paralização'],values='Peso da carga movimentada (t)',title="Quantidade de Carga Movimentada (t)")
+      fig_date = px.treemap(df_sem_conteiner, path=[px.Constant("Porto de Vila do Conde"), 'Carga principal','Berço'],values='Peso da carga movimentada (t)',title="Quantidade de Carga Movimentada (t)")
       col9.plotly_chart(fig_date)
 
       #-----------------------------------------------------------------------------------------------------------------------
-      df_temp_berco_carga = df_filtered.groupby('Berço').agg({'Paralização':'sum'}).reset_index()
-      df_temp_berco_carga["Paralização"] = df_temp_berco_carga["Paralização"].round(2)
-      fig_date = px.sunburst(df_temp_berco_carga, path=['Berço'], values='Paralização',width=700,title="PARALISAÇÃO(Hora) Por Berço")
-      #fig_date = px.bar(df_temp_berco_carga, x="Berço", y="Paralização",color="Berço",text_auto=True,width=700,height=750, title="PARALIZAÇÃO(Hrs) Por Berço")
+      df_temp_berco_carga = df_filtered.groupby('Berço').agg({'Paralisação':'sum'}).reset_index()
+      df_temp_berco_carga["Paralisação"] = df_temp_berco_carga["Paralisação"].round(2)
+      fig_date = px.sunburst(df_temp_berco_carga, path=['Berço'], values='Paralisação',width=700,title="PARALISAÇÃO(Hora) Por Berço")
+      #fig_date = px.bar(df_temp_berco_carga, x="Berço", y="Paralisação",color="Berço",text_auto=True,width=700,height=750, title="PARALISAÇÃO(Hrs) Por Berço")
       col10.plotly_chart(fig_date)
 
       df_filtered["Tempo de Atracação"] = df_filtered["Horário desatracação"] - df_filtered["Horário atracação"]
-      df_tempo_navio_carga = df_filtered.groupby('Carga principal').agg({'Tempo de Atracação':'sum','Agendamento':'count','Paralização':'sum'}).reset_index()
+      df_tempo_navio_carga = df_filtered.groupby('Carga principal').agg({'Tempo de Atracação':'sum','Agendamento':'count','Paralisação':'sum'}).reset_index()
       df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo de Atracação"] / df_tempo_navio_carga["Agendamento"]
       
       df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo Médio"].round('min')

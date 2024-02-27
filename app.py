@@ -148,7 +148,7 @@ with st.container():
     st.dataframe(df_filtered[['Embarcação','Agência','Navegação','Carga principal']],2000,600,hide_index=True)
   with tab3:
     
-    st.header('INDICADORES', divider='blue')
+    st.subheader('INDICADORES', divider='blue')
     
     df_teste = pd.DataFrame(columns=['INDICADORES','CENÁRIO','PERÍODO','DESCRIÇÃO','DEZEMBRO 2023'])
     df_relatorio = pd.DataFrame(
@@ -164,7 +164,7 @@ with st.container():
     st.dataframe(df_relatorio,2000,hide_index=True)
     
     
-    st.header('Tempo de espera para atracação por berço (dias)', divider='violet')
+    st.subheader('Tempo de espera para atracação por berço (dias)', divider='violet')
     df_relatorio2 = pd.DataFrame(
     [
         {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"101", month : "0,27" },

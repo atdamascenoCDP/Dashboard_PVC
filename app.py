@@ -19,12 +19,44 @@ def Load_dados(endereco):
   df["Berço"] = df["Berço"].astype(str)
   df = df.rename(columns={'Soma do tempo de operação paralisada': 'Paralisação'})
   df["Qtd. de carga movimentada (un.)"] = df["Qtd. de carga movimentada (un.)"].astype(str)
+  df["Tempo de Atracação"] = df["Horário desatracação"] - df["Horário atracação"]
   #df["Horário fundeio"]= df["Horário fundeio"].astype(str)
   return df
 
+def graf_op_mov_carg():
+  fig_date = px.pie(df_filtered, values='Peso da carga movimentada (t)', names='Operador',title="Operador Por Carga")
+  return fig_date
+
+def graf_carg_mov(df_enviado):
+  df_sem_conteiner = df_enviado[df_enviado['Carga principal']!='CONTÊINERES']
+  fig_date = px.treemap(df_sem_conteiner, path=[px.Constant("Porto de Vila do Conde"), 'Carga principal','Berço'],values='Peso da carga movimentada (t)',title="Quantidade de Carga Movimentada (t)")
+  return fig_date
+
+def graf_paralizacao(df_enviado):
+  df_temp_berco_carga = df_enviado.groupby('Berço').agg({'Paralisação':'sum'}).reset_index()
+  df_temp_berco_carga["Paralisação"] = df_temp_berco_carga["Paralisação"].round(2)
+  fig_date = px.sunburst(df_temp_berco_carga, path=['Berço'], values='Paralisação',width=700,title="PARALISAÇÃO(Hora) Por Berço")
+  #fig_date = px.bar(df_temp_berco_carga, x="Berço", y="Paralisação",color="Berço",text_auto=True,width=700,height=750, title="PARALISAÇÃO(Hrs) Por Berço")
+  return fig_date
+
+def graf_stad_emb(df_enviado):
+  df_tempo_navio_carga = df_enviado.groupby('Carga principal').agg({'Tempo de Atracação':'sum','Agendamento':'count','Paralisação':'sum'}).reset_index()
+  df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo de Atracação"] / df_tempo_navio_carga["Agendamento"]
+
+  df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo Médio"].round('min')
+  df_tempo_navio_carga = df_tempo_navio_carga.sort_values("Tempo Médio")
+  df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo Médio"].astype(str)
+  fig_date = px.bar(df_tempo_navio_carga, x="Tempo Médio", y="Carga principal",orientation='h',text_auto=True,width=700,height=750, title="ESTADIA DAS EMBARCAÇÃO POR CARGA (Média)")
+  return fig_date
+
+def graf_mov_conteiner(df_enviado):
+  df_so_conteiner = df_enviado[df_enviado['Carga principal']=='CONTÊINERES']
+  fig_date = px.pie(df_so_conteiner, values='Qtd. de contêineres movimentados (un.)', names='Operador',hover_data=['Berço'],title="Quantidade de Conteiner Movimentada (Un)")
+  return fig_date
 
 #Layout de Visualização da Dashboard
 #/content/drive/MyDrive/Colab Notebooks/ICONS/CDP.png
+#Img/CDP.png
 st.set_page_config(page_title="Dashboard PVC", page_icon="Img/CDP.png", layout="wide")
 
 intro1, intro2,intro3  = st.columns(3)
@@ -33,6 +65,7 @@ with st.container():
      st.title("Monitoramento PVC")
   with intro3:
     #/content/drive/MyDrive/Colab Notebooks/ICONS/cdp2.png
+    #Img/cdp2.png
     st.image("Img/cdp2.png",width=300)
     st.text('Tec. Admin. OP: Amaro Neto')
 
@@ -42,9 +75,10 @@ st.header('Filtros:')
 
 col1, col2, col3 = st.columns(3)
 
-tab1, tab2 = st.tabs(["📈 Gráficos", "🗃 Dados"])
+tab1, tab2 = st.tabs(["📈 Gráficos", ":ship: Embarcações"])
 
 #/content/drive/MyDrive/Colab Notebooks/banco_dados/dados.xlsx
+#Base_Dados/dados.xlsx
 df = Load_dados('Base_Dados/dados.xlsx')
 
 with st.container():
@@ -78,47 +112,37 @@ with st.container():
 
       with st.container():
         with col4:
-
           st.metric("TEMPO DE ESPERA PARA ATRACAÇÃO","----")
         with col5:
           st.metric("CUMPRIMENTO DA PROGRAMAÇÃO DE ATRACAÇÃO","----")
+
         with col6:
           st.metric("INDICE DE MOVIMENTAÇÃO DE CONTEINERES","----")
+
         with col7:
           emb = df_filtered['Embarcação'].count()
           st.metric("Total de Embarcações",emb)
 
+        with col8:
+          fig_date = graf_op_mov_carg()
+          col8.plotly_chart(fig_date)
 
-      #-----------------------------------------------------------------------------------------------------------------------
-      fig_date = px.pie(df_filtered, values='Peso da carga movimentada (t)', names='Operador',title="Operador Por Carga")
-      col8.plotly_chart(fig_date)
+        with col9:
+          fig_date = graf_carg_mov(df_filtered)
+          col9.plotly_chart(fig_date)
 
-      df_sem_conteiner = df_filtered[df_filtered['Carga principal']!='CONTÊINERES']
-      fig_date = px.treemap(df_sem_conteiner, path=[px.Constant("Porto de Vila do Conde"), 'Carga principal','Berço'],values='Peso da carga movimentada (t)',title="Quantidade de Carga Movimentada (t)")
-      col9.plotly_chart(fig_date)
+        with col10:
+          fig_date = graf_paralizacao(df_filtered)
+          col10.plotly_chart(fig_date)
 
-      #-----------------------------------------------------------------------------------------------------------------------
-      df_temp_berco_carga = df_filtered.groupby('Berço').agg({'Paralisação':'sum'}).reset_index()
-      df_temp_berco_carga["Paralisação"] = df_temp_berco_carga["Paralisação"].round(2)
-      fig_date = px.sunburst(df_temp_berco_carga, path=['Berço'], values='Paralisação',width=700,title="PARALISAÇÃO(Hora) Por Berço")
-      #fig_date = px.bar(df_temp_berco_carga, x="Berço", y="Paralisação",color="Berço",text_auto=True,width=700,height=750, title="PARALISAÇÃO(Hrs) Por Berço")
-      col10.plotly_chart(fig_date)
+        with col11:
+          fig_date = graf_stad_emb(df_filtered)
+          col11.plotly_chart(fig_date)
 
-      df_filtered["Tempo de Atracação"] = df_filtered["Horário desatracação"] - df_filtered["Horário atracação"]
-      df_tempo_navio_carga = df_filtered.groupby('Carga principal').agg({'Tempo de Atracação':'sum','Agendamento':'count','Paralisação':'sum'}).reset_index()
-      df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo de Atracação"] / df_tempo_navio_carga["Agendamento"]
-      
-      df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo Médio"].round('min')
-      df_tempo_navio_carga = df_tempo_navio_carga.sort_values("Tempo Médio")
-      df_tempo_navio_carga["Tempo Médio"] = df_tempo_navio_carga["Tempo Médio"].astype(str)
-      fig_date = px.bar(df_tempo_navio_carga, x="Tempo Médio", y="Carga principal",orientation='h',text_auto=True,width=700,height=750, title="ESTADIA DAS EMBARCAÇÃO POR CARGA (Média)")
-      col11.plotly_chart(fig_date)
-      #-----------------------------------------------------------------------------------------------------------------------
-      
-      df_so_conteiner = df_filtered[df_filtered['Carga principal']=='CONTÊINERES']
-      fig_date = px.pie(df_so_conteiner, values='Qtd. de contêineres movimentados (un.)', names='Operador',hover_data=['Berço'],title="Quantidade de Conteiner Movimentada (Un)")
-      col12.plotly_chart(fig_date)
+        with col12:
+          fig_date = graf_mov_conteiner(df_filtered)
+          col12.plotly_chart(fig_date)
       #-----------------------------------------------------------------------------------------------------------------------
 
   with tab2:
-    st.dataframe(df_filtered,2000,600,hide_index=True)
+    st.dataframe(df_filtered[['Embarcação','Agência','Navegação','Carga principal']],2000,600,hide_index=True)

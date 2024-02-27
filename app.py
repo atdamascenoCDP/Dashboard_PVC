@@ -189,3 +189,11 @@ with st.container():
         
     ]
     )
+    st.subheader('Tempo de permanência no fundeio', divider='violet')
+    st.subheader('Estadia de Navios/Dia', divider='violet')
+    st.subheader('Produtividade de Operador Portuário(tonelada/dia)', divider='violet')
+    st.subheader('Taxa de Ocupação por Berço', divider='violet')
+    
+    
+    
+    

@@ -147,7 +147,7 @@ with st.container():
   with tab2:
     st.dataframe(df_filtered[['Embarcação','Agência','Navegação','Carga principal']],2000,600,hide_index=True)
   with tab3:
-    #pd.DataFrame(columns=['INDICADORES','CENÁRIO','PERÍODO','DESCRIÇÃO','DEZEMBRO 2023'])
+    df_teste = pd.DataFrame(columns=['INDICADORES','CENÁRIO','PERÍODO','DESCRIÇÃO','DEZEMBRO 2023'])
     df_relatorio = pd.DataFrame(
     [
         {"INDICADORES": "Quantidade de caminhões que acessam o porto", "CENÁRIO": "Setoriais", "PERÍODO": "Mensal","DESCRIÇÃO":"------", month :17608 },
@@ -160,3 +160,4 @@ with st.container():
     ]
     )
     st.dataframe(df_relatorio,2000,600,hide_index=True)
+    st.dataframe(df_teste,2000,600,hide_index=True)

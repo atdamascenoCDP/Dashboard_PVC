@@ -158,7 +158,7 @@ with st.container():
         
     ]
     )
-    st.dataframe(df_relatorio,2000,600,hide_index=True)
+    st.dataframe(df_relatorio,600,hide_index=True)
     df_relatorio2 = pd.DataFrame(
     [
         {"INDICADORES": "Tempo de espera para atracação por berço (dias)","CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"101", month : "0,27" },

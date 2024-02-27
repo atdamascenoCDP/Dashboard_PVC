@@ -147,5 +147,12 @@ with st.container():
   with tab2:
     st.dataframe(df_filtered[['Embarcação','Agência','Navegação','Carga principal']],2000,600,hide_index=True)
   with tab3:
-    df_relatorio = pd.DataFrame(columns=['INDICADORES','CENÁRIO','PERÍODO','DESCRIÇÃO','DEZEMBRO 2023'])
+    #pd.DataFrame(columns=['INDICADORES','CENÁRIO','PERÍODO','DESCRIÇÃO','DEZEMBRO 2023'])
+    df_relatorio = pd.DataFrame(
+    [
+        {"INDICADORES": "st.selectbox", "CENÁRIO": 4, "PERÍODO": True,"DESCRIÇÃO":"teste","Mês" :"DEZEMBRO 2023" },
+        {"INDICADORES": "st.balloons", "CENÁRIO": 5, "PERÍODO": False,"DESCRIÇÃO":"teste", "Mês" :"DEZEMBRO 2023" },
+        {"INDICADORES": "st.time_input","CENÁRIO": 3, "PERÍODO": True,"DESCRIÇÃO":"teste", "Mês" :"DEZEMBRO 2023" },
+    ]
+    )
     st.dataframe(df_relatorio,2000,600,hide_index=True)

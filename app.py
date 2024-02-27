@@ -155,8 +155,8 @@ with st.container():
         {"INDICADORES": "Cumprimento da programação de atracação","CENÁRIO": "Setoriais", "PERÍODO": "Mensal","DESCRIÇÃO":"------", month:"DEZEMBRO 2023" },
         {"INDICADORES": "Tempo de espera para atracação (dias)","CENÁRIO": "Setoriais", "PERÍODO": "Mensal","DESCRIÇÃO":"------", month :"DEZEMBRO 2023" },
         {"INDICADORES": "Cumprimento da programação de atracação","CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"------", month :"DEZEMBRO 2023" },
-        {"INDICADORES": "Tempo de espera para atracação por berço (dias)","CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"101", month :0,27 },
-        {"INDICADORES": "Tempo de espera para atracação por berço (dias)","CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"102", month :0,22 },
+        {"INDICADORES": "Tempo de espera para atracação por berço (dias)","CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"101", month : "0,27" },
+        {"INDICADORES": "Tempo de espera para atracação por berço (dias)","CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"102", month : "0,22" },
     ]
     )
     st.dataframe(df_relatorio,2000,600,hide_index=True)

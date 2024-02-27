@@ -181,3 +181,11 @@ with st.container():
     ]
     )
     st.dataframe(df_relatorio2,2000,hide_index=True)
+
+    
+    st.subheader('Capacidade Instalada', divider='violet')
+    df_relatorio3 = pd.DataFrame(
+    [
+        
+    ]
+    )

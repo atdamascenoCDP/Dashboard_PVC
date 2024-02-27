@@ -148,7 +148,7 @@ with st.container():
     st.dataframe(df_filtered[['Embarcação','Agência','Navegação','Carga principal']],2000,600,hide_index=True)
   with tab3:
     
-    st.header('This is a header with a divider', divider='rainbow')
+    st.header('INDICADORES', divider='blue')
     
     df_teste = pd.DataFrame(columns=['INDICADORES','CENÁRIO','PERÍODO','DESCRIÇÃO','DEZEMBRO 2023'])
     df_relatorio = pd.DataFrame(

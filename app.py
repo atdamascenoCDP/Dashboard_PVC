@@ -148,9 +148,8 @@ with st.container():
     st.dataframe(df_filtered[['Embarcação','Agência','Navegação','Carga principal']],2000,600,hide_index=True)
   with tab3:
     
-    st.subheader('INDICADORES', divider='blue')
+    st.subheader('INDICADORES', divider='violet')
     
-    df_teste = pd.DataFrame(columns=['INDICADORES','CENÁRIO','PERÍODO','DESCRIÇÃO','DEZEMBRO 2023'])
     df_relatorio = pd.DataFrame(
     [
         {"INDICADORES": "Quantidade de caminhões que acessam o porto", "CENÁRIO": "Setoriais", "PERÍODO": "Mensal","DESCRIÇÃO":"------", month :17608 },
@@ -169,6 +168,16 @@ with st.container():
     [
         {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"101", month : "0,27" },
         {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"102", month : "0,22" },
+        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"201", month : "0,22" },
+        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"202", month : "0,22" },
+        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"301", month : "0,22" },
+        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"302", month : "0,22" },
+        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"401", month : "0,22" },
+        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"402", month : "0,22" },
+        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"501", month : "0,22" },
+        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"502", month : "0,22" },
+        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"Rampa", month : "0,22" },
+        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"TGL", month : "0,22" },
     ]
     )
     st.dataframe(df_relatorio2,2000,hide_index=True)

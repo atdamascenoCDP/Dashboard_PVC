@@ -191,7 +191,10 @@ with st.container():
     )
     st.subheader('Tempo de permanência no fundeio', divider='violet')
     st.subheader('Estadia de Navios/Dia', divider='violet')
+    
     st.subheader('Produtividade de Operador Portuário(tonelada/dia)', divider='violet')
+    st.dataframe(df_filtered['Operador'].unique(),2000,hide_index=True)
+    
     st.subheader('Taxa de Ocupação por Berço', divider='violet')
     
     

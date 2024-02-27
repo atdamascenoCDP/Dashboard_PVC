@@ -75,7 +75,7 @@ st.header('Filtros:')
 
 col1, col2, col3 = st.columns(3)
 
-tab1, tab2, tab3 = st.tabs(["📈 Gráficos", ":ship: Embarcações","Relatório"])
+tab1, tab2, tab3 = st.tabs(["📈 Gráficos", ":ship: Embarcações",":bookmark_tabs: Relatório"])
 
 #/content/drive/MyDrive/Colab Notebooks/banco_dados/dados.xlsx
 #Base_Dados/dados.xlsx

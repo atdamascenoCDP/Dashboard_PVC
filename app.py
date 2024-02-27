@@ -159,12 +159,13 @@ with st.container():
     ]
     )
     st.dataframe(df_relatorio,2000,hide_index=True)
-
+    
+    st.write("Tempo de espera para atracação por berço (dias)")
     st.divider()
     df_relatorio2 = pd.DataFrame(
     [
-        {"INDICADORES": "Tempo de espera para atracação por berço (dias)","CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"101", month : "0,27" },
-        {"INDICADORES": "Tempo de espera para atracação por berço (dias)","CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"102", month : "0,22" },
+        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"101", month : "0,27" },
+        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"102", month : "0,22" },
     ]
     )
     st.dataframe(df_relatorio2,2000,hide_index=True)

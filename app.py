@@ -150,11 +150,11 @@ with st.container():
     #pd.DataFrame(columns=['INDICADORES','CENÁRIO','PERÍODO','DESCRIÇÃO','DEZEMBRO 2023'])
     df_relatorio = pd.DataFrame(
     [
-        {"INDICADORES": "Quantidade de caminhões que acessam o porto", "CENÁRIO": "Setoriais", "PERÍODO": "Mensal","DESCRIÇÃO":"------","Mês" :"DEZEMBRO 2023" },
-        {"INDICADORES": "Índice de movimentação de contêineres (vazios)", "CENÁRIO": "Setoriais", "PERÍODO": "Mensal","DESCRIÇÃO":"------", "Mês" :"DEZEMBRO 2023" },
-        {"INDICADORES": "Cumprimento da programação de atracação","CENÁRIO": "Setoriais", "PERÍODO": "Mensal","DESCRIÇÃO":"------", "Mês" :"DEZEMBRO 2023" },
-        {"INDICADORES": "Tempo de espera para atracação (dias)","CENÁRIO": "Setoriais", "PERÍODO": "Mensal","DESCRIÇÃO":"------", "Mês" :"DEZEMBRO 2023" },
-        {"INDICADORES": "Cumprimento da programação de atracação","CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"------", "Mês" :"DEZEMBRO 2023" },
+        {"INDICADORES": "Quantidade de caminhões que acessam o porto", "CENÁRIO": "Setoriais", "PERÍODO": "Mensal","DESCRIÇÃO":"------", month :"DEZEMBRO 2023" },
+        {"INDICADORES": "Índice de movimentação de contêineres (vazios)", "CENÁRIO": "Setoriais", "PERÍODO": "Mensal","DESCRIÇÃO":"------", month :"DEZEMBRO 2023" },
+        {"INDICADORES": "Cumprimento da programação de atracação","CENÁRIO": "Setoriais", "PERÍODO": "Mensal","DESCRIÇÃO":"------", month:"DEZEMBRO 2023" },
+        {"INDICADORES": "Tempo de espera para atracação (dias)","CENÁRIO": "Setoriais", "PERÍODO": "Mensal","DESCRIÇÃO":"------", month :"DEZEMBRO 2023" },
+        {"INDICADORES": "Cumprimento da programação de atracação","CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"------", month :"DEZEMBRO 2023" },
     ]
     )
     st.dataframe(df_relatorio,2000,600,hide_index=True)

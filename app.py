@@ -184,25 +184,11 @@ with st.container():
 
 
 
-    st.subheader('Tempo de espera para atracação por berço (dias)  ('+ month +')', divider='violet')
-    df_relatorio2 = pd.DataFrame(
-    [
-        {"LOCAL (BERÇO)":"101", "Média (DIA)" : "0,27" },
-        {"LOCAL (BERÇO)":"102", "Média (DIA)" : "0,22" },
-        {"LOCAL (BERÇO)":"201", "Média (DIA)" : "0,22" },
-        {"LOCAL (BERÇO)":"202", "Média (DIA)" : "0,22" },
-        {"LOCAL (BERÇO)":"301", "Média (DIA)" : "0,22" },
-        {"LOCAL (BERÇO)":"302", "Média (DIA)" : "0,22" },
-        {"LOCAL (BERÇO)":"401", "Média (DIA)" : "0,22" },
-        {"LOCAL (BERÇO)":"402", "Média (DIA)" : "0,22" },
-        {"LOCAL (BERÇO)":"501", "Média (DIA)" : "0,22" },
-        {"LOCAL (BERÇO)":"502", "Média (DIA)" : "0,22" },
-        {"LOCAL (BERÇO)":"Rampa","Média (DIA)" : "0,22" },
-        {"LOCAL (BERÇO)":"TGL", "Média (DIA)" : "0,22" },
-    ]
-    )
-    st.dataframe(df_relatorio2,700,460,hide_index=True)
-
+    st.subheader('Tempo de espera para atracação  ('+ month +')', divider='violet')
+    df_espera_berco = df_filtered.groupby('Berço').agg({'Horário chegada no porto':'mean','Horário atracação':'mean'}).reset_index()
+    df_espera_berco['Média'] = df_espera_berco['Horário chegada no porto']-df_espera_berco['Horário atracação']
+    
+    st.dataframe(df_espera_berco[['Berço','Média']],700,460,hide_index=True)
 
 
 
@@ -222,7 +208,10 @@ with st.container():
     st.code(f""" """)
 
     st.subheader('Estadia de Navios/Dia  ('+ month +')', divider='violet')
-    st.code(f""" """)
+    df_estadia_carga = df_filtered.groupby('Carga principal').agg({'Horário chegada no porto':'mean','Horário desatracação':'mean'}).reset_index()
+    df_estadia_carga['Estadia'] = df_estadia_carga['Horário chegada no porto']-df_estadia_carga['Horário desatracação']
+    
+    st.dataframe(df_estadia_carga[['Carga principal','Estadia']],700,460,hide_index=True)
 
     st.subheader('Produtividade de Operador Portuário(tonelada/dia)  ('+ month +')', divider='violet')
     st.dataframe(df_filtered['Operador'].unique(),2000,hide_index=True)

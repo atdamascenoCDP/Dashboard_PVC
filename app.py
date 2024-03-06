@@ -18,6 +18,8 @@ def Load_dados(endereco):
   df["Horário desatracação"] = pd.to_datetime(df['Horário desatracação'], format="%d/%m/%Y %H:%M")
   df["Horário atracação"] = pd.to_datetime(df['Horário atracação'], format="%d/%m/%Y %H:%M")
   df["Horário chegada no porto"] = pd.to_datetime(df['Horário chegada no porto'], format="%d/%m/%Y %H:%M")
+  df["Horário início operação"] = pd.to_datetime(df['Horário início operação'], format="%d/%m/%Y %H:%M")
+  df["Horário término da operação"] = pd.to_datetime(df['Horário término da operação'], format="%d/%m/%Y %H:%M")
  
 
   df['Peso da carga movimentada (t)'] = df['Peso da carga movimentada (t)'].apply(lambda x: float(x.replace(".","").replace(",",".")))
@@ -28,6 +30,8 @@ def Load_dados(endereco):
   df['Paralisação'] = df['Paralisação'].apply(lambda x: float(x.replace(",",".")))
   df["Qtd. de carga movimentada (un.)"] = df["Qtd. de carga movimentada (un.)"].astype(str)
   df["Tempo de Atracação"] = df["Horário desatracação"] - df["Horário atracação"]
+  df['Tempo Operando'] = df['Horário término da operação'] - df['Horário início operação']
+  df['Tempo Atracado'] = df['Horário desatracação'] - df['Horário atracação']
 
   return df
 
@@ -171,53 +175,63 @@ with st.container():
   with tab2:
     st.dataframe(df_filtered[['Embarcação','Agência','Navegação','Carga principal']],1000,hide_index=True)
   with tab3:
-
-    st.subheader('INDICADORES ('+ month +')', divider='violet')
-    st.code(f""" {month}
-    Quantidade de caminhões que acessam o porto :
-
-    Índice de movimentação de contêineres (vazios) :
-
-    Cumprimento da programação de atracação :
-
-    Tempo de espera para atracação (dias) :
-
-    Cumprimento da programação de atracação : """)
-
-
-
-    st.subheader('Tempo de espera para atracação  ('+ month +')', divider='violet')
-    df_espera_berco = df_filtered.groupby('Berço').agg({'Horário chegada no porto':'mean','Horário atracação':'mean'}).reset_index()
-    df_espera_berco['Média'] = df_espera_berco['Horário chegada no porto']-df_espera_berco['Horário atracação']
+    col1_tab3, col2_tab3 = st.columns(2)
+    col3_tab3, col4_tab3 = st.columns(2)
+    col5_tab3, col6_tab3 = st.columns(2)
     
-    st.dataframe(df_espera_berco[['Berço','Média']],700,460,hide_index=True)
+    with col1_tab3:
+      st.subheader('Indicadores', divider='violet')
+      df_relatorio2 = pd.DataFrame(
+      [
+          {"": "Quantidade de caminhões que acessam o porto" , month: "Mensal" },
+          {"": "Índice de movimentação de contêineres (vazios)" , month: "Mensal" },
+          {"": "Cumprimento da programação de atracação" , month: "Mensal" },
+          {"": "Tempo de espera para atracação (dias)" , month: "Mensal" },
+          
+      ]
+      )
+      st.dataframe(df_relatorio2,700,hide_index=True)
 
+    with col2_tab3:
+      st.subheader('Tempo de espera para atracação  ('+ month +')', divider='violet')
+      df_espera_berco = df_filtered.groupby('Berço').agg({'Horário chegada no porto':'mean','Horário atracação':'mean'}).reset_index()
+      df_espera_berco['Média'] = df_espera_berco['Horário chegada no porto'] - df_espera_berco['Horário atracação']
+          
+      st.dataframe(df_espera_berco[['Berço','Média']],700,460,hide_index=True)
 
+      #---------------------------------------------------------------------------------------------------------------------------
+    with col3_tab3:
+      st.subheader('Capacidade Instalada  ('+ month +')', divider='violet')
+      url = 'https://docs.google.com/spreadsheets/d/1PKaF2Ah5HaGEY2EK0lyJ7oomtg2NV3Z0vkhakGn0ld0/edit#gid=853419680'
+      url_convertida = convert_google_sheet_url(url)
+      df_capacidade = pd.read_csv(url_convertida)
+      df_capacidade['CAPACIDADE (T/ANO)'] = df_capacidade['CAPACIDADE (T/ANO)'].apply(lambda x: float(x.replace(".","").replace(",",".")))
+      df_resultado = df_filtered.groupby('Carga principal')[['Peso da carga movimentada (t)']].sum().reset_index()
+      df_resultado2 = pd.merge(df_resultado, df_capacidade, left_on='Carga principal', right_on='Carga principal')
+      df_resultado2['CAPACIDADE %'] = df_resultado2['Peso da carga movimentada (t)']/df_resultado2['CAPACIDADE (T/ANO)']*100
+      #.round(2)
+      st.dataframe(df_resultado2[['Carga principal','CAPACIDADE %']],700,460,hide_index=True)
 
-    st.subheader('Capacidade Instalada  ('+ month +')', divider='violet')
-    url = 'https://docs.google.com/spreadsheets/d/1PKaF2Ah5HaGEY2EK0lyJ7oomtg2NV3Z0vkhakGn0ld0/edit#gid=853419680'
-    url_convertida = convert_google_sheet_url(url)
-    df_capacidade = pd.read_csv(url_convertida)
-    df_capacidade['CAPACIDADE (T/ANO)'] = df_capacidade['CAPACIDADE (T/ANO)'].apply(lambda x: float(x.replace(".","").replace(",",".")))
-    df_resultado = df_filtered.groupby('Carga principal')[['Peso da carga movimentada (t)']].sum().reset_index()
-    df_resultado2 = pd.merge(df_resultado, df_capacidade, left_on='Carga principal', right_on='Carga principal')
-    df_resultado2['CAPACIDADE %'] = df_resultado2['Peso da carga movimentada (t)']/df_resultado2['CAPACIDADE (T/ANO)']*100
-    #.round(2)
-    st.dataframe(df_resultado2[['Carga principal','CAPACIDADE %']],700,460,hide_index=True)
+    with col4_tab3:      
+      #---------------------------------------------------------------------------------------------------------------------------
+      st.subheader('Estadia de Navios/Dia  ('+ month +')', divider='violet')
+      df_estadia_carga = df_filtered.groupby('Carga principal').agg({'Horário chegada no porto':'mean','Horário desatracação':'mean'}).reset_index()
+      df_estadia_carga['Estadia'] = df_estadia_carga['Horário chegada no porto'] - df_estadia_carga['Horário desatracação']
+            
+      st.dataframe(df_estadia_carga[['Carga principal','Estadia']],700,460,hide_index=True)
 
-
-    st.subheader('Tempo de permanência no fundeio  ('+ month +')', divider='violet')
-    st.code(f""" """)
-
-    st.subheader('Estadia de Navios/Dia  ('+ month +')', divider='violet')
-    df_estadia_carga = df_filtered.groupby('Carga principal').agg({'Horário chegada no porto':'mean','Horário desatracação':'mean'}).reset_index()
-    df_estadia_carga['Estadia'] = df_estadia_carga['Horário chegada no porto']-df_estadia_carga['Horário desatracação']
+    with col5_tab3:
+      #---------------------------------------------------------------------------------------------------------------------------
+      st.subheader('Produtividade de Operador(tons/dia)  ('+ month +')', divider='violet')
+      df_prod_op = df_filtered.groupby('Operador').agg({'Tempo Operando':'mean'}).reset_index()
+            
+      st.dataframe(df_prod_op,700,460,hide_index=True)
     
-    st.dataframe(df_estadia_carga[['Carga principal','Estadia']],700,460,hide_index=True)
-
-    st.subheader('Produtividade de Operador Portuário(tonelada/dia)  ('+ month +')', divider='violet')
-    st.dataframe(df_filtered['Operador'].unique(),2000,hide_index=True)
-    st.code(f""" """)
-
-    st.subheader('Taxa de Ocupação por Berço  ('+ month +')', divider='violet')
-    st.code(f""" """)
+    with col6_tab3:
+      #---------------------------------------------------------------------------------------------------------------------------
+      st.subheader('Taxa de Ocupação por Berço  ('+ month +')', divider='violet')
+      df_ocupa_berco = df_filtered.groupby('Berço').agg({'Tempo Atracado':'sum'}).reset_index()
+      df_ocupa_berco['Tempo Atracado'] = df_ocupa_berco['Tempo Atracado'].apply(lambda x: x.days)
+      df_ocupa_berco['Média %'] = df_ocupa_berco['Tempo Atracado'] / 31 *100
+      df_ocupa_berco['Média %'] = df_ocupa_berco['Média %'].round(2)
+      st.dataframe(df_ocupa_berco[['Berço','Média %']],700,460,hide_index=True)

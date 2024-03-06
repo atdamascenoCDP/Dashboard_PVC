@@ -6,22 +6,41 @@ import numpy as np
 import plotly.express as px
 from streamlit.elements import plotly_chart
 import plotly.graph_objects as go
-
+import re
 
 
 #Carregando Dados e Ajuste
 @st.cache_data
 def Load_dados(endereco):
-  df = pd.read_excel(endereco, sheet_name='1ª planilha')
-  #df = pd.read_csv(DATA_URL)
+  #df = pd.read_excel(endereco, sheet_name='1ª planilha')
+  df = pd.read_csv(endereco)
+
+  df["Horário desatracação"] = pd.to_datetime(df['Horário desatracação'], format="%d/%m/%Y %H:%M")
+  df["Horário atracação"] = pd.to_datetime(df['Horário atracação'], format="%d/%m/%Y %H:%M")
+
+  df['Peso da carga movimentada (t)'] = df['Peso da carga movimentada (t)'].apply(lambda x: float(x.replace(".","").replace(",",".")))
   df["Mes"]= df["Horário desatracação"].apply(lambda x: str(x.year) + "-" + str(x.month))
   df.loc[df["Carga principal"] == "COQUE DE PETRÓLEO, BETUME DE PETRÓLEO E OUTROS RESÍDUOS DOS ÓLEOS DE PETRÓLEO","Carga principal"] = "COQUE"
   df["Berço"] = df["Berço"].astype(str)
   df = df.rename(columns={'Soma do tempo de operação paralisada': 'Paralisação'})
+  df['Paralisação'] = df['Paralisação'].apply(lambda x: float(x.replace(",",".")))
   df["Qtd. de carga movimentada (un.)"] = df["Qtd. de carga movimentada (un.)"].astype(str)
   df["Tempo de Atracação"] = df["Horário desatracação"] - df["Horário atracação"]
-  #df["Horário fundeio"]= df["Horário fundeio"].astype(str)
+
   return df
+
+def convert_google_sheet_url(url):
+  # Regular expression to match and capture the necessary part of the URL
+  pattern = r'https://docs\.google\.com/spreadsheets/d/([a-zA-Z0-9-_]+)(/edit#gid=(\d+)|/edit.*)?'
+
+  # Replace function to construct the new URL for CSV export
+  # If gid is present in the URL, it includes it in the export URL, otherwise, it's omitted
+  replacement = lambda m: f'https://docs.google.com/spreadsheets/d/{m.group(1)}/export?' + (f'gid={m.group(3)}&' if m.group(3) else '') + 'format=csv'
+
+  # Replace using regex
+  new_url = re.sub(pattern, replacement, url)
+
+  return new_url
 
 def graf_op_mov_carg():
   fig_date = px.pie(df_filtered, values='Peso da carga movimentada (t)', names='Operador',title="Operador Por Carga")
@@ -79,7 +98,10 @@ tab1, tab2, tab3 = st.tabs(["📈 Gráficos", ":ship: Embarcações",":bookmark_
 
 #/content/drive/MyDrive/Colab Notebooks/banco_dados/dados.xlsx
 #Base_Dados/dados.xlsx
-df = Load_dados('Base_Dados/dados.xlsx')
+url = 'https://docs.google.com/spreadsheets/d/1nHv38Vp7VcH5Ut4fp90eBXAW2siUwwvZCPt8WKwFDP4/edit#gid=704208139'
+
+new_url = convert_google_sheet_url(url)
+df = Load_dados(new_url)
 
 with st.container():
 
@@ -145,58 +167,66 @@ with st.container():
       #-----------------------------------------------------------------------------------------------------------------------
 
   with tab2:
-    st.dataframe(df_filtered[['Embarcação','Agência','Navegação','Carga principal']],2000,600,hide_index=True)
+    st.dataframe(df_filtered[['Embarcação','Agência','Navegação','Carga principal']],1000,hide_index=True)
   with tab3:
-    
-    st.subheader('INDICADORES', divider='violet')
-    
-    df_relatorio = pd.DataFrame(
-    [
-        {"INDICADORES": "Quantidade de caminhões que acessam o porto", "CENÁRIO": "Setoriais", "PERÍODO": "Mensal","DESCRIÇÃO":"------", month :17608 },
-        {"INDICADORES": "Índice de movimentação de contêineres (vazios)", "CENÁRIO": "Setoriais", "PERÍODO": "Mensal","DESCRIÇÃO":"------", month :"DEZEMBRO 2023" },
-        {"INDICADORES": "Cumprimento da programação de atracação","CENÁRIO": "Setoriais", "PERÍODO": "Mensal","DESCRIÇÃO":"------", month:"DEZEMBRO 2023" },
-        {"INDICADORES": "Tempo de espera para atracação (dias)","CENÁRIO": "Setoriais", "PERÍODO": "Mensal","DESCRIÇÃO":"------", month :"DEZEMBRO 2023" },
-        {"INDICADORES": "Cumprimento da programação de atracação","CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"------", month :"DEZEMBRO 2023" },
-        
-    ]
-    )
-    st.dataframe(df_relatorio,2000,hide_index=True)
-    
-    
-    st.subheader('Tempo de espera para atracação por berço (dias)', divider='violet')
+
+    st.subheader('INDICADORES ('+ month +')', divider='violet')
+    st.code(f""" {month}
+    Quantidade de caminhões que acessam o porto :
+
+    Índice de movimentação de contêineres (vazios) :
+
+    Cumprimento da programação de atracação :
+
+    Tempo de espera para atracação (dias) :
+
+    Cumprimento da programação de atracação : """)
+
+
+
+    st.subheader('Tempo de espera para atracação por berço (dias)  ('+ month +')', divider='violet')
     df_relatorio2 = pd.DataFrame(
     [
-        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"101", month : "0,27" },
-        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"102", month : "0,22" },
-        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"201", month : "0,22" },
-        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"202", month : "0,22" },
-        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"301", month : "0,22" },
-        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"302", month : "0,22" },
-        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"401", month : "0,22" },
-        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"402", month : "0,22" },
-        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"501", month : "0,22" },
-        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"502", month : "0,22" },
-        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"Rampa", month : "0,22" },
-        {"CENÁRIO": "Setoriais" , "PERÍODO": "Mensal","DESCRIÇÃO":"TGL", month : "0,22" },
+        {"LOCAL (BERÇO)":"101", "Média (DIA)" : "0,27" },
+        {"LOCAL (BERÇO)":"102", "Média (DIA)" : "0,22" },
+        {"LOCAL (BERÇO)":"201", "Média (DIA)" : "0,22" },
+        {"LOCAL (BERÇO)":"202", "Média (DIA)" : "0,22" },
+        {"LOCAL (BERÇO)":"301", "Média (DIA)" : "0,22" },
+        {"LOCAL (BERÇO)":"302", "Média (DIA)" : "0,22" },
+        {"LOCAL (BERÇO)":"401", "Média (DIA)" : "0,22" },
+        {"LOCAL (BERÇO)":"402", "Média (DIA)" : "0,22" },
+        {"LOCAL (BERÇO)":"501", "Média (DIA)" : "0,22" },
+        {"LOCAL (BERÇO)":"502", "Média (DIA)" : "0,22" },
+        {"LOCAL (BERÇO)":"Rampa","Média (DIA)" : "0,22" },
+        {"LOCAL (BERÇO)":"TGL", "Média (DIA)" : "0,22" },
     ]
     )
-    st.dataframe(df_relatorio2,2000,hide_index=True)
+    st.dataframe(df_relatorio2,700,460,hide_index=True)
 
-    
-    st.subheader('Capacidade Instalada', divider='violet')
-    df_relatorio3 = pd.DataFrame(
-    [
-        
-    ]
-    )
-    st.subheader('Tempo de permanência no fundeio', divider='violet')
-    st.subheader('Estadia de Navios/Dia', divider='violet')
-    
-    st.subheader('Produtividade de Operador Portuário(tonelada/dia)', divider='violet')
+
+
+
+    st.subheader('Capacidade Instalada  ('+ month +')', divider='violet')
+    url = 'https://docs.google.com/spreadsheets/d/1PKaF2Ah5HaGEY2EK0lyJ7oomtg2NV3Z0vkhakGn0ld0/edit#gid=853419680'
+    url_convertida = convert_google_sheet_url(url)
+    df_capacidade = pd.read_csv(url_convertida)
+    df_capacidade['CAPACIDADE (T/ANO)'] = df_capacidade['CAPACIDADE (T/ANO)'].apply(lambda x: float(x.replace(".","").replace(",",".")))
+    df_resultado = df_filtered.groupby('Carga principal')[['Peso da carga movimentada (t)']].sum().reset_index()
+    df_resultado2 = pd.merge(df_resultado, df_capacidade, left_on='Carga principal', right_on='Carga principal')
+    df_resultado2['CAPACIDADE %'] = df_resultado2['Peso da carga movimentada (t)']/df_resultado2['CAPACIDADE (T/ANO)']*100
+    #.round(2)
+    st.dataframe(df_resultado2[['Carga principal','CAPACIDADE %']],700,460,hide_index=True)
+
+
+    st.subheader('Tempo de permanência no fundeio  ('+ month +')', divider='violet')
+    st.code(f""" """)
+
+    st.subheader('Estadia de Navios/Dia  ('+ month +')', divider='violet')
+    st.code(f""" """)
+
+    st.subheader('Produtividade de Operador Portuário(tonelada/dia)  ('+ month +')', divider='violet')
     st.dataframe(df_filtered['Operador'].unique(),2000,hide_index=True)
-    
-    st.subheader('Taxa de Ocupação por Berço', divider='violet')
-    
-    
-    
-    
+    st.code(f""" """)
+
+    st.subheader('Taxa de Ocupação por Berço  ('+ month +')', divider='violet')
+    st.code(f""" """)

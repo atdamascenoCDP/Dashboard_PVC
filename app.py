@@ -225,7 +225,7 @@ with st.container():
       st.subheader('Produtividade de Operador(tons/dia)  ('+ month +')', divider='violet')
       df_prod_op = df_filtered.groupby('Operador').agg({'Tempo Operando':'mean'}).reset_index()
             
-      st.dataframe(df_prod_op,700,460,hide_index=True)
+      st.dataframe(df_prod_op,700,600,hide_index=True)
     
     with col6_tab3:
       #---------------------------------------------------------------------------------------------------------------------------

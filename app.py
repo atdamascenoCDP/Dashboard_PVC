@@ -17,6 +17,8 @@ def Load_dados(endereco):
 
   df["Horário desatracação"] = pd.to_datetime(df['Horário desatracação'], format="%d/%m/%Y %H:%M")
   df["Horário atracação"] = pd.to_datetime(df['Horário atracação'], format="%d/%m/%Y %H:%M")
+  df["Horário chegada no porto"] = pd.to_datetime(df['Horário chegada no porto'], format="%d/%m/%Y %H:%M")
+ 
 
   df['Peso da carga movimentada (t)'] = df['Peso da carga movimentada (t)'].apply(lambda x: float(x.replace(".","").replace(",",".")))
   df["Mes"]= df["Horário desatracação"].apply(lambda x: str(x.year) + "-" + str(x.month))

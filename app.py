@@ -1,5 +1,4 @@
 #%%writefile app.py
-%%writefile app.py
 from logging import PlaceHolder
 import streamlit as st
 import pandas as pd

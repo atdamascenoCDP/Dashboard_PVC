@@ -197,7 +197,7 @@ with st.container():
 
   with tab2:
     #df_filtered[['Embarcação','Agência','Navegação','Carga principal']]
-    st.dataframe(df_espera_berco,1000,hide_index=True)
+    st.dataframe(df_filtered[['Embarcação','Agência','Navegação','Carga principal']],1000,hide_index=True)
   with tab3:
     col1_tab3, col2_tab3 = st.columns(2)
     col3_tab3, col4_tab3 = st.columns(2)

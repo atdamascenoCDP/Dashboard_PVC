@@ -150,7 +150,12 @@ with st.container():
 
       with st.container():
         with col4:
-          st.metric("TEMPO DE ESPERA PARA ATRACAÇÃO","----")
+          df_espera_berco = df_filtered.groupby('Berço').agg({'Horário chegada no porto':'mean','Horário atracação':'mean'}).reset_index()
+          df_espera_berco['Média (dia)'] = df_espera_berco['Horário atracação'] - df_espera_berco['Horário chegada no porto']
+          df_espera_berco['Média (dia)'] = df_espera_berco['Média (dia)'].apply(lambda x: x.days)
+          media_tempo_total = df_espera_berco['Média (dia)'].mean()
+        
+          st.metric("TEMPO DE ESPERA PARA ATRACAÇÃO (Dia)",media_tempo_total)
         with col5:
           #df_desistencia['Desistência'] = df_desistencia['Desistência'].apply(lambda x: int(x))
           indice_desistencia = df_desistencia['Desistência'].values[0] / emb_total
@@ -166,7 +171,7 @@ with st.container():
           indice_mov_conteiner = indice_mov_conteiner.round(4) * 100
           st.metric("INDICE DE MOVIMENTAÇÃO DE CONTEINERES",str(indice_mov_conteiner) + " %")
 
-        with col7:          
+        with col7:
           st.metric("Total de Embarcações",emb_total)
 
         with col8:
@@ -192,7 +197,7 @@ with st.container():
 
   with tab2:
     #df_filtered[['Embarcação','Agência','Navegação','Carga principal']]
-    st.dataframe(df_filtered[['Embarcação','Agência','Navegação','Carga principal']],1000,hide_index=True)
+    st.dataframe(df_espera_berco,1000,hide_index=True)
   with tab3:
     col1_tab3, col2_tab3 = st.columns(2)
     col3_tab3, col4_tab3 = st.columns(2)
@@ -200,17 +205,14 @@ with st.container():
 
     with col1_tab3:
       st.subheader('Indicadores', divider='violet')
-      
-      df_espera_berco = df_filtered.groupby('Berço').agg({'Horário chegada no porto':'mean','Horário atracação':'mean'}).reset_index()
-      df_espera_berco['Média'] = df_espera_berco['Horário chegada no porto'] - df_espera_berco['Horário atracação']
-      #media_tempo = df_espera_berco['Média'].mean()
 
+      qta_caminhao = df_desistencia['Qtd. caminhões'].values[0]
       df_relatorio2 = pd.DataFrame(
       [
-          {"": "Quantidade de caminhões que acessam o porto" , month: "Mensal" },
+          {"": "Quantidade de caminhões que acessam o porto" , month: qta_caminhao },
           {"": "Índice de movimentação de contêineres (vazios)" , month: str(indice_mov_conteiner) + " %" },
           {"": "Cumprimento da programação de atracação" , month: str(indice_cumprimento) + " %" },
-          {"": "Tempo de espera para atracação (dias)" , month: '' },
+          {"": "Tempo de espera para atracação (dias)" , month: media_tempo_total },
 
       ]
       )
@@ -218,7 +220,7 @@ with st.container():
 
     with col2_tab3:
       st.subheader('Tempo de espera para atracação  ('+ month +')', divider='violet')
-      st.dataframe(df_espera_berco[['Berço','Média']],700,460,hide_index=True)
+      st.dataframe(df_espera_berco[['Berço','Média (dia)']],700,460,hide_index=True)
 
       #---------------------------------------------------------------------------------------------------------------------------
     with col3_tab3:
@@ -256,3 +258,5 @@ with st.container():
       df_ocupa_berco['Média %'] = df_ocupa_berco['Tempo Atracado'] / 31 *100
       df_ocupa_berco['Média %'] = df_ocupa_berco['Média %'].round(2)
       st.dataframe(df_ocupa_berco[['Berço','Média %']],700,460,hide_index=True)
+
+
